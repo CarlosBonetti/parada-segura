@@ -1,22 +1,12 @@
 import { stringify } from 'qs'
-import { useState } from 'react'
 import useSWR from 'swr'
+import { LatLng, usePosition, distance } from './position'
 
 const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 
 const proxy = 'https://cors-anywhere.herokuapp.com'
 
-export const usePosition = () => {
-  const [position, setPosition] = useState<Position | null>(null)
-
-  navigator.geolocation.getCurrentPosition((position) => {
-    setPosition(position)
-  })
-
-  return position
-}
-
-export type LatLng = { lat: number; lng: number }
+const types = ['car_repair', 'gas_station', 'parking', 'restaurant']
 
 export interface NearbySearchResult {
   status: string
@@ -55,7 +45,7 @@ export const useNearbySearch = () => {
     location: `${latitude},${longitude}`,
     // radius: '1000',
     rankby: 'distance',
-    type: 'restaurant',
+    type: 'gas_station',
     // keyword: 'posto',
     // opennow: true,
     // pagetoken: '',
@@ -63,12 +53,24 @@ export const useNearbySearch = () => {
 
   const str = stringify(params, { encode: false })
 
-  return useSWR<NearbySearchResult>(
+  const { data, ...rest } = useSWR<NearbySearchResult>(
     latitude && longitude
       ? `${proxy}/https://maps.googleapis.com/maps/api/place/nearbysearch/json?${str}`
       : null,
     fetcher
   )
+
+  return {
+    data: {
+      ...data,
+      results:
+        data?.results.map((result) => ({
+          ...result,
+          distance: distance({ lat: latitude || 0, lng: longitude || 0 }, result.geometry.location),
+        })) ?? [],
+    },
+    ...rest,
+  }
 }
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())

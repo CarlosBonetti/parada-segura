@@ -13,6 +13,7 @@ import { yellow } from '@material-ui/core/colors'
 import StarIcon from '@material-ui/icons/Star'
 import React from 'react'
 import { useNearbySearch } from '../../api'
+import { humanizeDistance } from '../../position'
 
 export function NearbyListingPage() {
   const { data } = useNearbySearch()
@@ -33,12 +34,15 @@ export function NearbyListingPage() {
               </ListItemAvatar>
               <ListItemText
                 primary={result.name}
+                secondaryTypographyProps={{ component: 'div' }}
                 secondary={
                   <>
                     <Typography variant="body2" color="textPrimary">
                       {result.vicinity}
                     </Typography>
-                    <Typography variant="body2">19 km de distância (1h20)</Typography>
+                    <Typography variant="body2">
+                      {humanizeDistance(result.distance)} de distância
+                    </Typography>
 
                     {result.types?.length && (
                       <Box mt={1}>
