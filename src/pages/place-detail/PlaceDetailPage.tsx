@@ -1,10 +1,13 @@
-import { Box, Typography, Fab, makeStyles, Tabs, Tab, Container, Button } from '@material-ui/core'
+import { Box, Button, Container, Grid, makeStyles, Tab, Tabs, Typography } from '@material-ui/core'
+import { yellow } from '@material-ui/core/colors'
+import DirectionsIcon from '@material-ui/icons/Directions'
+import StarIcon from '@material-ui/icons/Star'
+import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined'
 import React, { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { API_KEY, usePlace } from '../../api'
+import { Link, useParams } from 'react-router-dom'
+import { API_KEY, usePlace, usePlaceRatings } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
-import FeedbackIcon from '@material-ui/icons/Feedback'
-import StarIcon from '@material-ui/icons/StarBorderOutlined'
+import { PlaceRatingsList } from './PlaceRatings'
 
 export interface PlaceDetailPageParams {
   placeId: string
@@ -13,18 +16,18 @@ export interface PlaceDetailPageParams {
 export function PlaceDetailPage() {
   const { placeId } = useParams()
   const place = usePlace(placeId)
+  const ratings = usePlaceRatings(placeId)
+  const score = ratings.reduce((curr, s) => curr + s.score, 0) / (ratings.length || 1)
 
   const [tab, setTab] = useState<string>('avaliacoes')
   const classes = useStyles()
 
   return (
-    <PageLayout title={place?.name}>
+    <PageLayout title={place?.name} backUrl="/">
+      {!place && <Typography>Carregando...</Typography>}
+
       {place && (
         <>
-          <Fab aria-label="Denunciar" color="secondary" className={classes.fab}>
-            <FeedbackIcon />
-          </Fab>
-
           <Box>
             <iframe
               title={`${place?.name} map location`}
@@ -36,9 +39,19 @@ export function PlaceDetailPage() {
           </Box>
 
           <Container>
-            <Box my={2}>
-              <Typography variant="subtitle2">Endereço</Typography>
-              <Typography variant="body2">{place.address}</Typography>
+            <Box mt={2} mb={3}>
+              <Grid container justify="space-between" spacing={1} wrap="nowrap">
+                <Grid item>
+                  <Typography variant="subtitle2">Endereço</Typography>
+                  <Typography variant="body2">{place.address}</Typography>
+                </Grid>
+                <Grid item>
+                  <Button color="primary" classes={{ label: classes.label }}>
+                    <DirectionsIcon />
+                    Rotas
+                  </Button>
+                </Grid>
+              </Grid>
             </Box>
           </Container>
 
@@ -56,15 +69,36 @@ export function PlaceDetailPage() {
           {tab === 'avaliacoes' && (
             <Container>
               <Box my={2}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  startIcon={<StarIcon />}
-                  component={Link}
-                  to={`/place/${place.id}/rating`}
-                >
-                  Avaliar
-                </Button>
+                <Typography variant="subtitle1">Média geral</Typography>
+                <Grid container justify="space-between" spacing={1} wrap="nowrap">
+                  <Grid container item spacing={1} alignItems="baseline">
+                    <Grid item>
+                      <StarIcon style={{ color: yellow[700] }} />
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="h6" component="span">
+                        {score}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="body2">({ratings.length} avaliações)</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      startIcon={<StarBorderOutlinedIcon />}
+                      component={Link}
+                      to={`/place/${place.id}/rating`}
+                    >
+                      Avaliar
+                    </Button>
+                  </Grid>
+                </Grid>
+
+                <Typography variant="subtitle1">Comentários</Typography>
+                <PlaceRatingsList ratings={ratings} />
               </Box>
             </Container>
           )}
@@ -72,7 +106,8 @@ export function PlaceDetailPage() {
           {tab === 'info' && (
             <Container>
               <Box my={2}>
-                <Typography>
+                <Typography variant="subtitle2">Sobre o PPD</Typography>
+                <Typography variant="body2">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore necessitatibus
                   ipsam itaque consequatur blanditiis nesciunt expedita voluptatem aperiam. Alias,
                   quas rem! Optio dolorum sit nihil earum excepturi quam similique mollitia?
@@ -87,9 +122,7 @@ export function PlaceDetailPage() {
 }
 
 const useStyles = makeStyles((theme) => ({
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
+  label: {
+    flexDirection: 'column',
   },
 }))

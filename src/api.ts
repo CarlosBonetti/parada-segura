@@ -81,11 +81,55 @@ export const usePlace = (placeId: string) => {
   return places.find((place) => place.id === placeId)
 }
 
-export interface RatingData {
+export interface Rating extends RatingData {
+  id: string
   score: number
-  comments: string
 }
 
-export const sendRating = (placeId: string, rating: RatingData) => {
-  return db.collection(`places/${placeId}/ratings`).add(rating)
+export interface RatingForm {
+  comments: string
+  estacionamento: number | null
+  banheiro: number | null
+  refeitorio: number | null
+  infraestrutura: number | null
+}
+
+export interface RatingData {
+  date: { seconds: number; nanoseconds: number }
+  comments: string
+  estacionamento: number
+  banheiro: number
+  refeitorio: number
+  infraestrutura: number
+}
+
+export const usePlaceRatings = (placeId: string) => {
+  const [ratings, setRatings] = useState<Rating[]>([])
+
+  useEffect(() => {
+    db.collection(`places/${placeId}/ratings`)
+      .get()
+      .then((querySnapshot) => {
+        const results = querySnapshot.docs.map((doc) => {
+          const data = doc.data() as RatingData
+          return {
+            ...data,
+            id: doc.id,
+            score:
+              (data.banheiro + data.estacionamento + data.infraestrutura + data.refeitorio) / 4,
+          }
+        })
+
+        setRatings(results)
+      })
+  }, [placeId])
+
+  return ratings
+}
+
+export const sendRating = (placeId: string, rating: RatingForm) => {
+  return db.collection(`places/${placeId}/ratings`).add({
+    ...rating,
+    date: new Date(),
+  })
 }
