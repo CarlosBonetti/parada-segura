@@ -12,21 +12,17 @@ export function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <AppBar />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact>
+            <NearbyListingPage />
+          </Route>
 
-      <Container maxWidth="md" disableGutters>
-        <BrowserRouter>
-          <Switch>
-            <Route path="/" exact>
-              <NearbyListingPage />
-            </Route>
-
-            <Route path="/place/:placeId" exact>
-              <PlaceDetailPage />
-            </Route>
-          </Switch>
-        </BrowserRouter>
-      </Container>
+          <Route path="/place/:placeId" exact>
+            <PlaceDetailPage />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }

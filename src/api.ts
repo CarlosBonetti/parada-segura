@@ -9,7 +9,7 @@ export const populate = async () => {
   console.log('Finished populating')
 }
 
-const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
+export const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 
 // export const usePlaceDetail = (placeId: string) => {
 //   const params = {
