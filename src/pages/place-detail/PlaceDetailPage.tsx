@@ -6,12 +6,14 @@ import { API_KEY, usePlace, usePlaceRatings } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
 import { PlaceInfo } from './PlaceInfo'
 import { PlaceRating } from './PlaceRating'
+import { usePosition } from '../../position'
 
 export interface PlaceDetailPageParams {
   placeId: string
 }
 
 export function PlaceDetailPage() {
+  const position = usePosition()
   const { placeId } = useParams()
   const place = usePlace(placeId)
   const ratings = usePlaceRatings(placeId)
@@ -42,12 +44,19 @@ export function PlaceDetailPage() {
                   <Typography variant="subtitle2">Endereço</Typography>
                   <Typography variant="body2">{place.address}</Typography>
                 </Grid>
-                <Grid item>
-                  <Button color="primary" classes={{ label: classes.label }}>
-                    <DirectionsIcon />
-                    Rotas
-                  </Button>
-                </Grid>
+                {position && (
+                  <Grid item>
+                    <Button
+                      color="primary"
+                      classes={{ label: classes.label }}
+                      href={`https://www.google.com/maps?f=d&saddr=@${position?.coords.latitude},${position?.coords.longitude}&daddr=${place.name}, ${place.city}&dirflg=d`}
+                      target="_blank"
+                    >
+                      <DirectionsIcon />
+                      Rotas
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Box>
           </Container>

@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 export function distance(coords1: Coordinates, coords2: Coordinates) {
   const { latitude: lat1, longitude: lng1 } = coords1
   const { latitude: lat2, longitude: lng2 } = coords2
@@ -11,17 +9,17 @@ export function distance(coords1: Coordinates, coords2: Coordinates) {
   return 12742 * Math.asin(Math.sqrt(a))
 }
 
+let position: Position | null = null
+
+navigator.geolocation.getCurrentPosition(
+  (pos) => {
+    position = pos
+  },
+  (error) => {
+    console.error(error)
+  }
+)
+
 export const usePosition = () => {
-  const [position, setPosition] = useState<Position | null>(null)
-
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      setPosition(position)
-    },
-    (error) => {
-      console.error(error)
-    }
-  )
-
   return position
 }

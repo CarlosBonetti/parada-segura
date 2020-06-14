@@ -1,12 +1,4 @@
-import {
-  Container,
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-} from '@material-ui/core'
+import { Container, Divider, List, ListItem, ListItemText, Typography } from '@material-ui/core'
 import React from 'react'
 
 export function PlaceInfo() {
