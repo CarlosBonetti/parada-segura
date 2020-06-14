@@ -6,7 +6,7 @@ export function AppBar() {
     <MuiAppBar position="static">
       <Toolbar>
         <Container maxWidth="md" disableGutters>
-          <Typography variant="h6">Lalala</Typography>
+          <Typography variant="h6">Nome do App</Typography>
         </Container>
       </Toolbar>
     </MuiAppBar>

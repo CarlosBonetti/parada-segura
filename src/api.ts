@@ -1,89 +1,85 @@
-import { stringify } from 'qs'
-import useSWR from 'swr'
-import { LatLng, usePosition, distance } from './position'
+import { useEffect, useState } from 'react'
+import { db } from './firebase'
+import { distance, usePosition } from './position'
+import initialPdps from './pdps.json'
+
+export const populate = async () => {
+  const pdpsRef = db.collection('ppds')
+  await Promise.all(initialPdps.map(async (pdp: any) => await pdpsRef.add(pdp)))
+  console.log('Finished populating')
+}
 
 const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 
-const proxy = 'https://cors-anywhere.herokuapp.com'
+// export const usePlaceDetail = (placeId: string) => {
+//   const params = {
+//     key: API_KEY,
+//     language: 'pt-BR',
+//     place_id: placeId,
+//     fields:
+//       'name,business_status,formatted_address,geometry,icon,permanently_closed,photo,place_id,plus_code,type,url,utc_offset,vicinity,address_component,adr_address',
+//   }
+//   const str = stringify(params, { encode: false })
 
-const types = ['car_repair', 'gas_station', 'parking', 'restaurant']
+//   return useSWR(`${proxy}/https://maps.googleapis.com/maps/api/place/details/json?${str}`, fetcher)
+// }
 
-export interface NearbySearchResult {
-  status: string
-  next_page_token: string
-  results: {
-    business_status: string
-    geometry: {
-      location: LatLng
-      viewport: {
-        northeast: LatLng
-        southwest: LatLng
-      }
-    }
-    icon: string
-    id: string
-    name: string
-    opening_hours: { open_now: boolean }
-    place_id: string
-    plus_code: { compound_code: string; global_code: string }
-    rating: number
-    reference: string
-    scope: string
-    types: string[]
-    user_ratings_total: number
-    vicinity: string
-  }[]
+export interface PPD extends PPDData {
+  distance: number
+  rating: number
 }
 
-export const useNearbySearch = () => {
+export interface PPDData {
+  id: string
+  name: string
+  coords: Coordinates
+  city: string
+  highway: string
+  km: number
+  address: string
+}
+
+export const usePDPData = () => {
+  const [data, setData] = useState<PPDData[]>([])
+
+  useEffect(() => {
+    db.collection('ppds')
+      .get()
+      .then((querySnapshot) => {
+        const results = querySnapshot.docs.map((doc) => {
+          const docData = doc.data() as PPDData
+          return {
+            ...docData,
+            id: doc.id,
+          }
+        })
+
+        setData(results)
+      })
+  }, [])
+
+  return data
+}
+
+export const usePPDs = () => {
   const position = usePosition()
-  const { latitude, longitude } = position?.coords ?? {}
+  const { coords } = position || {}
 
-  const params = {
-    key: API_KEY,
-    language: 'pt-BR',
-    location: `${latitude},${longitude}`,
-    // radius: '1000',
-    rankby: 'distance',
-    type: 'gas_station',
-    // keyword: 'posto',
-    // opennow: true,
-    // pagetoken: '',
-  }
+  const data = usePDPData()
 
-  const str = stringify(params, { encode: false })
-
-  const { data, ...rest } = useSWR<NearbySearchResult>(
-    latitude && longitude
-      ? `${proxy}/https://maps.googleapis.com/maps/api/place/nearbysearch/json?${str}`
-      : null,
-    fetcher
-  )
-
-  return {
-    data: {
-      ...data,
-      results:
-        data?.results.map((result) => ({
-          ...result,
-          distance: distance({ lat: latitude || 0, lng: longitude || 0 }, result.geometry.location),
-        })) ?? [],
-    },
-    ...rest,
-  }
+  return data
+    .map((d) => ({
+      ...d,
+      rating: 5,
+      distance: coords ? distance(d.coords, coords) : null,
+    }))
+    .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+export interface RatingData {
+  score: number
+}
 
-export const usePlaceDetail = (placeId: string) => {
-  const params = {
-    key: API_KEY,
-    language: 'pt-BR',
-    place_id: placeId,
-    fields:
-      'name,business_status,formatted_address,geometry,icon,permanently_closed,photo,place_id,plus_code,type,url,utc_offset,vicinity,address_component,adr_address',
-  }
-  const str = stringify(params, { encode: false })
-
-  return useSWR(`${proxy}/https://maps.googleapis.com/maps/api/place/details/json?${str}`, fetcher)
+export const sendRating = (placeId: string, rating: RatingData) => {
+  return db.collection(`ppds/${placeId}/ratings`).add(rating)
 }

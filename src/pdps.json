@@ -1,0 +1,134 @@
+[
+  {
+    "name": "Posto Magnólia",
+    "city": "Teresina - Pi",
+    "highway": "BR 318",
+    "km": 0,
+    "address": "Av. Pres. Getúlio Vargas, 1310 - Triunfo, Teresina - PI, 64022-098",
+    "coords": {
+      "latitude": -5.1245819,
+      "longitude": -42.7998888
+    }
+  },
+  {
+    "name": "Posto Magnólia 6",
+    "city": "Açailândia - MA",
+    "highway": "BR 010",
+    "km": 1.415,
+    "address": "Km 1415, BR-010 - Centro, Açailândia - MA, 65926-000",
+    "coords": {
+      "latitude": -4.9549153,
+      "longitude": -47.5055336
+    }
+  },
+  {
+    "name": "Posto Limarques",
+    "city": "Cabrobó - PE",
+    "highway": "BR 428",
+    "km": 10,
+    "address": "Av. João Píres da Silva, 694-722, Cabrobó - PE, 56180-000",
+    "coords": {
+      "latitude": -8.5077499,
+      "longitude": -39.3150412
+    }
+  },
+  {
+    "name": "Posto Mantra",
+    "city": "Curitiba - PR",
+    "highway": "BR 376",
+    "km": 587,
+    "address": "Rua Eurico Julio Bettega, 99 - Cidade Industrial De Curitiba, Curitiba - PR, 81290-040",
+    "coords": {
+      "latitude": -25.4378881,
+      "longitude": -49.3681517
+    }
+  },
+  {
+    "name": "Rede de Postos Presidente - Filial Mega I",
+    "city": "Nossa Senhora Do Socorro - SS",
+    "highway": "BR 101",
+    "km": 92,
+    "address": "Caminho p/ Br, 101, Nossa Sra. do Socorro - SE, 49160-000",
+    "coords": {
+      "latitude": -10.8962247,
+      "longitude": -37.1302577
+    }
+  },
+  {
+    "name": "Posto Alvorada",
+    "city": "Goiatuba - GO",
+    "highway": "BR 153",
+    "km": 670,
+    "address": "BR-153, Km 670 Zona Rural, Goiatuba - GO, 75600-000",
+    "coords": {
+      "latitude": -18.133408,
+      "longitude": -49.2875708
+    }
+  },
+  {
+    "name": "Auto Posto M. Frutal",
+    "city": "Frutal - MG",
+    "highway": "BR 153",
+    "km": 186,
+    "address": "ROD BR 153, KM 186 - ZONA RURAL, Frutal - MG, 38200-000",
+    "coords": {
+      "latitude": -19.8485083,
+      "longitude": -48.966205
+    }
+  },
+  {
+    "name": "Auto Posto Rodochaves",
+    "city": "Itatiaiuaçu - MG",
+    "highway": "BR 381",
+    "km": 547,
+    "address": "Rodovia BR 381, Km 547, s/n - ZONA RURAL, Itatiaiuçu - MG, 35685-000",
+    "coords": {
+      "latitude": -20.2116863,
+      "longitude": -44.493743
+    }
+  },
+  {
+    "name": "Auto Posto Vale Verde",
+    "city": "Rio Manso - MG",
+    "highway": "BR 381",
+    "km": 547,
+    "address": "547, BR-381, S/N, Rio Manso - MG, 35525-000",
+    "coords": {
+      "latitude": -20.2773506,
+      "longitude": -44.4289256
+    }
+  },
+  {
+    "name": "Posto Sol da Dutra",
+    "city": "Barra Mansa - RJ",
+    "highway": "BR 116",
+    "km": 290,
+    "address": "ROD PRES DUTRA KM 290,SN, Barra Mansa - RJ, 27365-000",
+    "coords": {
+      "latitude": -22.4581769,
+      "longitude": -44.322745
+    }
+  },
+  {
+    "name": "Posto Sol da Dutra",
+    "city": "Porto Real - RJ",
+    "highway": "BR 116",
+    "km": 296,
+    "address": "Santo Antonio, Porto Real - RJ, 27570-000",
+    "coords": {
+      "latitude": -22.4531734,
+      "longitude": -44.3474712
+    }
+  },
+  {
+    "name": "Posto Sol da Dutra",
+    "city": "Resende - RJ",
+    "highway": "BR 116",
+    "km": 304,
+    "address": "Rod. Pres. Dutra, 340, Resende - RJ",
+    "coords": {
+      "latitude": -22.4594647,
+      "longitude": -44.4257668
+    }
+  }
+]
