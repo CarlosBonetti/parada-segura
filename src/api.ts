@@ -59,7 +59,7 @@ export const useFirePlaces = (): FirebasePlace[] => {
             ...docData,
             id: doc.id,
             ratings: ratingsSnapshot.docs.length,
-            score: scores.reduce((sum, curr) => sum + curr, 0),
+            score: scores.reduce((sum, curr) => sum + curr, 0) / scores.length,
           }
         })
       )
