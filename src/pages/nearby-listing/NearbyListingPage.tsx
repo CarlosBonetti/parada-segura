@@ -35,11 +35,12 @@ export function NearbyListingPage() {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
+                primaryTypographyProps={{ className: classes.listTitle }}
                 primary={result.name}
                 secondaryTypographyProps={{ component: 'div' }}
                 secondary={
                   <>
-                    <Typography variant="body2" color="textPrimary">
+                    <Typography variant="subtitle2">
                       {result.highway} | km {result.km}
                     </Typography>
 
@@ -48,7 +49,7 @@ export function NearbyListingPage() {
                     {result.distance && (
                       <Box display="inline-flex" alignItems="center" mt={0.5}>
                         <LocalShippingIcon color="primary" fontSize="small" />
-                        <Typography variant="subtitle2" style={{ marginLeft: '0.25rem' }}>
+                        <Typography variant="body2" style={{ marginLeft: '0.25rem' }}>
                           {formatDecimal(result.distance)}km de distância
                         </Typography>
                       </Box>
@@ -75,6 +76,9 @@ export function NearbyListingPage() {
 }
 
 const useStyles = makeStyles((theme) => ({
+  listTitle: {
+    fontWeight: 500,
+  },
   avatar: {
     backgroundColor: theme.palette.grey[200],
   },
