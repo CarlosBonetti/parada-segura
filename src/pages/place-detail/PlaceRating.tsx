@@ -36,7 +36,7 @@ export function PlaceRating({ place, ratings }: PlaceRating) {
           </Grid>
           <Grid item>
             <Button
-              variant="outlined"
+              variant="contained"
               color="secondary"
               startIcon={<StarBorderOutlinedIcon />}
               component={Link}

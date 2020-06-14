@@ -38,6 +38,8 @@ export function RatingPage() {
 
   const handleCancel = () => history.replace(`/place/${placeId}`)
 
+  const isValid = Object.keys(crits).every((crit) => !!(formik.values as any)[crit])
+
   return (
     <PageLayout title={place?.name} backUrl={`/place/${placeId}`}>
       <Container>
@@ -82,7 +84,7 @@ export function RatingPage() {
                   <Button onClick={handleCancel}>Cancelar</Button>
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" color="secondary" type="submit">
+                  <Button variant="contained" color="secondary" type="submit" disabled={!isValid}>
                     Enviar avaliação
                   </Button>
                 </Grid>
