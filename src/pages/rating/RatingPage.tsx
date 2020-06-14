@@ -45,56 +45,50 @@ export function RatingPage() {
           <Box mb={2}>
             <Typography variant="subtitle2">Avaliar</Typography>
 
-            <Typography variant="body2">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus nam itaque
-              pariatur. Doloremque laboriosam repudiandae quia error assumenda accusantium omnis
-              natus beatae numquam sint vitae animi, architecto neque itaque earum!
-            </Typography>
+            <Typography variant="body2">Avalie aqui sua experiência no estabelecimento.</Typography>
           </Box>
 
-          {place && (
-            <form onSubmit={formik.handleSubmit}>
-              <Grid container spacing={2}>
-                {Object.entries(crits).map(([crit, label]) => (
-                  <Grid key={crit} item xs={12}>
-                    <Box component="fieldset" mb={0.5} borderColor="transparent">
-                      <Typography component="legend">{label}</Typography>
-                      <Rating
-                        name={crit}
-                        value={parseInt((formik.values as any)[crit])}
-                        onChange={(event, newValue) => {
-                          formik.setFieldValue(crit, newValue)
-                        }}
-                      />
-                    </Box>
-                    <Divider />
-                  </Grid>
-                ))}
-
-                <Grid item xs={12}>
-                  <TextField
-                    label="Comentários"
-                    fullWidth
-                    multiline
-                    variant="outlined"
-                    placeholder="lalal"
-                    {...formik.getFieldProps('comments')}
-                  />
+          <form onSubmit={formik.handleSubmit}>
+            <Grid container spacing={2}>
+              {Object.entries(crits).map(([crit, label]) => (
+                <Grid key={crit} item xs={12}>
+                  <Box component="fieldset" mb={0.5} borderColor="transparent">
+                    <Typography component="legend">{label}</Typography>
+                    <Rating
+                      name={crit}
+                      value={parseInt((formik.values as any)[crit])}
+                      onChange={(event, newValue) => {
+                        formik.setFieldValue(crit, newValue)
+                      }}
+                    />
+                  </Box>
+                  <Divider />
                 </Grid>
+              ))}
 
-                <Grid item container spacing={1} justify="flex-end">
-                  <Grid item>
-                    <Button onClick={handleCancel}>Cancelar</Button>
-                  </Grid>
-                  <Grid item>
-                    <Button variant="contained" color="primary" type="submit">
-                      Enviar avaliação
-                    </Button>
-                  </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Comentários"
+                  fullWidth
+                  multiline
+                  variant="outlined"
+                  placeholder="lalal"
+                  {...formik.getFieldProps('comments')}
+                />
+              </Grid>
+
+              <Grid item container spacing={1} justify="flex-end">
+                <Grid item>
+                  <Button onClick={handleCancel}>Cancelar</Button>
+                </Grid>
+                <Grid item>
+                  <Button variant="contained" color="primary" type="submit">
+                    Enviar avaliação
+                  </Button>
                 </Grid>
               </Grid>
-            </form>
-          )}
+            </Grid>
+          </form>
         </Box>
       </Container>
     </PageLayout>

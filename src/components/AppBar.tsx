@@ -1,4 +1,11 @@
-import { AppBar as MuiAppBar, IconButton, makeStyles, Toolbar, Typography } from '@material-ui/core'
+import {
+  AppBar as MuiAppBar,
+  IconButton,
+  makeStyles,
+  Toolbar,
+  Typography,
+  Container,
+} from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
@@ -16,21 +23,23 @@ export function AppBar({ title = 'Parada Segura', backUrl }: AppBarProps) {
 
   return (
     <MuiAppBar position="static" elevation={0}>
-      <Toolbar>
-        {backUrl && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="Voltar"
-            className={classes.menuButton}
-            onClick={handleBackButton}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-        )}
+      <Container maxWidth="sm" disableGutters>
+        <Toolbar>
+          {backUrl && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="Voltar"
+              className={classes.menuButton}
+              onClick={handleBackButton}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          )}
 
-        <Typography variant="h6">{title}</Typography>
-      </Toolbar>
+          <Typography variant="h6">{title}</Typography>
+        </Toolbar>
+      </Container>
     </MuiAppBar>
   )
 }

@@ -20,13 +20,13 @@ import { PageLayout } from '../../components/PageLayout'
 import { humanizeDistance } from '../../position'
 
 export function NearbyListingPage() {
-  const ppds = usePlaces()
+  const places = usePlaces()
   const classes = useStyles()
 
   return (
     <PageLayout>
       <List>
-        {ppds.map((result) => (
+        {places.map((result) => (
           <React.Fragment key={result.id}>
             <ListItem alignItems="flex-start" button component={Link} to={`/place/${result.id}`}>
               <ListItemAvatar>

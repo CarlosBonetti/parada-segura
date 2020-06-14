@@ -24,7 +24,7 @@ export function PlaceDetailPage() {
 
   return (
     <PageLayout title={place?.name} backUrl="/">
-      {!place && <Typography>Carregando...</Typography>}
+      {!place && <div />}
 
       {place && (
         <>
@@ -97,8 +97,16 @@ export function PlaceDetailPage() {
                   </Grid>
                 </Grid>
 
-                <Typography variant="subtitle1">Comentários</Typography>
-                <PlaceRatingsList ratings={ratings} />
+                <Box my={2}>
+                  <Typography variant="subtitle1">Comentários</Typography>
+                  {ratings.length === 0 && (
+                    <Typography variant="body2">
+                      Nenhum comentário. Seja o primeiro a avaliar!
+                    </Typography>
+                  )}
+
+                  {ratings.length > 0 && <PlaceRatingsList ratings={ratings} />}
+                </Box>
               </Box>
             </Container>
           )}
