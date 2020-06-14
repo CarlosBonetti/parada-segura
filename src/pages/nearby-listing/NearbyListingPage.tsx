@@ -13,12 +13,12 @@ import LocalShippingIcon from '@material-ui/icons/LocalShipping'
 import StarIcon from '@material-ui/icons/Star'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { usePPDs } from '../../api'
+import { usePlaces } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
 import { humanizeDistance } from '../../position'
 
 export function NearbyListingPage() {
-  const ppds = usePPDs()
+  const ppds = usePlaces()
 
   return (
     <PageLayout>

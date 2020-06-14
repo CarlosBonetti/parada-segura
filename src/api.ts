@@ -4,8 +4,8 @@ import { distance, usePosition } from './position'
 import initialPdps from './pdps.json'
 
 export const populate = async () => {
-  const pdpsRef = db.collection('ppds')
-  await Promise.all(initialPdps.map(async (pdp: any) => await pdpsRef.add(pdp)))
+  const placesRef = db.collection('places')
+  await Promise.all(initialPdps.map(async (pdp: any) => await placesRef.add(pdp)))
   console.log('Finished populating')
 }
 
@@ -24,12 +24,12 @@ export const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 //   return useSWR(`${proxy}/https://maps.googleapis.com/maps/api/place/details/json?${str}`, fetcher)
 // }
 
-export interface PPD extends PPDData {
+export interface Place extends FirebasePlace {
   distance: number
   rating: number
 }
 
-export interface PPDData {
+export interface FirebasePlace {
   id: string
   name: string
   coords: Coordinates
@@ -39,15 +39,15 @@ export interface PPDData {
   address: string
 }
 
-export const usePDPData = () => {
-  const [data, setData] = useState<PPDData[]>([])
+export const useFirePlaces = () => {
+  const [data, setData] = useState<FirebasePlace[]>([])
 
   useEffect(() => {
-    db.collection('ppds')
+    db.collection('places')
       .get()
       .then((querySnapshot) => {
         const results = querySnapshot.docs.map((doc) => {
-          const docData = doc.data() as PPDData
+          const docData = doc.data() as FirebasePlace
           return {
             ...docData,
             id: doc.id,
@@ -61,11 +61,11 @@ export const usePDPData = () => {
   return data
 }
 
-export const usePPDs = () => {
+export const usePlaces = () => {
   const position = usePosition()
   const { coords } = position || {}
 
-  const data = usePDPData()
+  const data = useFirePlaces()
 
   return data
     .map((d) => ({
@@ -76,10 +76,16 @@ export const usePPDs = () => {
     .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
 }
 
+export const usePlace = (placeId: string) => {
+  const places = usePlaces()
+  return places.find((place) => place.id === placeId)
+}
+
 export interface RatingData {
   score: number
+  comments: string
 }
 
 export const sendRating = (placeId: string, rating: RatingData) => {
-  return db.collection(`ppds/${placeId}/ratings`).add(rating)
+  return db.collection(`places/${placeId}/ratings`).add(rating)
 }

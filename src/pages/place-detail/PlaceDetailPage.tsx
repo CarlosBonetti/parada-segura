@@ -1,55 +1,85 @@
-import { Box, Typography, Fab, makeStyles, Tabs, Tab, Container } from '@material-ui/core'
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import { API_KEY, usePPDs } from '../../api'
+import { Box, Typography, Fab, makeStyles, Tabs, Tab, Container, Button } from '@material-ui/core'
+import React, { useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { API_KEY, usePlace } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
 import FeedbackIcon from '@material-ui/icons/Feedback'
+import StarIcon from '@material-ui/icons/StarBorderOutlined'
 
 export interface PlaceDetailPageParams {
   placeId: string
 }
 
 export function PlaceDetailPage() {
-  const classes = useStyles()
   const { placeId } = useParams()
-  const ppds = usePPDs()
-  const ppd = ppds.find((p) => p.id === placeId)
+  const place = usePlace(placeId)
+
+  const [tab, setTab] = useState<string>('avaliacoes')
+  const classes = useStyles()
 
   return (
-    <PageLayout title={ppd?.name}>
-      {ppd && (
+    <PageLayout title={place?.name}>
+      {place && (
         <>
-          <Fab aria-label="Denunciar" color="primary" className={classes.fab}>
+          <Fab aria-label="Denunciar" color="secondary" className={classes.fab}>
             <FeedbackIcon />
           </Fab>
 
           <Box>
             <iframe
-              title={`${ppd?.name} map location`}
+              title={`${place?.name} map location`}
               width="100%"
               height="150"
               style={{ border: 0 }}
-              src={`https://www.google.com/maps/embed/v1/place?zoom=14&q=${ppd.name}, ${ppd.city}&key=${API_KEY}`}
+              src={`https://www.google.com/maps/embed/v1/place?zoom=14&q=${place.name}, ${place.city}&key=${API_KEY}`}
             ></iframe>
           </Box>
 
           <Container>
             <Box my={2}>
               <Typography variant="subtitle2">Endereço</Typography>
-              <Typography variant="body2">{ppd.address}</Typography>
+              <Typography variant="body2">{place.address}</Typography>
             </Box>
           </Container>
 
           <Tabs
-            value="avaliacoes"
+            value={tab}
             indicatorColor="primary"
             textColor="primary"
-            // onChange={handleChange}
+            onChange={(e, value) => setTab(value)}
             variant="fullWidth"
           >
             <Tab value="info" label="Informações gerais" />
             <Tab value="avaliacoes" label="Avaliações" />
           </Tabs>
+
+          {tab === 'avaliacoes' && (
+            <Container>
+              <Box my={2}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<StarIcon />}
+                  component={Link}
+                  to={`/place/${place.id}/rating`}
+                >
+                  Avaliar
+                </Button>
+              </Box>
+            </Container>
+          )}
+
+          {tab === 'info' && (
+            <Container>
+              <Box my={2}>
+                <Typography>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore necessitatibus
+                  ipsam itaque consequatur blanditiis nesciunt expedita voluptatem aperiam. Alias,
+                  quas rem! Optio dolorum sit nihil earum excepturi quam similique mollitia?
+                </Typography>
+              </Box>
+            </Container>
+          )}
         </>
       )}
     </PageLayout>

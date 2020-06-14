@@ -12,7 +12,7 @@ export function AppBar({ title = 'Nome do App' }: AppBarProps) {
   const history = useHistory()
   const location = useLocation()
 
-  const handleBackButton = () => history.push('/')
+  const handleBackButton = () => history.goBack()
 
   return (
     <MuiAppBar position="static" elevation={0}>
