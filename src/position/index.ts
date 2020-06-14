@@ -25,9 +25,3 @@ export const usePosition = () => {
 
   return position
 }
-
-const numberFormatter = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
-
-export const humanizeDistance = (distance: number) => {
-  return `${numberFormatter.format(distance)}km`
-}

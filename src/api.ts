@@ -9,6 +9,8 @@ export const populate = async () => {
   console.log('Finished populating')
 }
 
+// populate()
+
 export const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 
 // export const usePlaceDetail = (placeId: string) => {
@@ -26,11 +28,12 @@ export const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 
 export interface Place extends FirebasePlace {
   distance: number
-  rating: number
 }
 
 export interface FirebasePlace {
   id: string
+  score: number
+  ratings: number
   name: string
   coords: Coordinates
   city: string
@@ -43,19 +46,28 @@ export const useFirePlaces = () => {
   const [data, setData] = useState<FirebasePlace[]>([])
 
   useEffect(() => {
-    db.collection('places')
-      .get()
-      .then((querySnapshot) => {
-        const results = querySnapshot.docs.map((doc) => {
+    const refresh = async () => {
+      const snapshot = await db.collection('places').get()
+      const results = await Promise.all(
+        snapshot.docs.map(async (doc) => {
           const docData = doc.data() as FirebasePlace
+
+          const ratingsSnapshot = await doc.ref.collection('ratings').get()
+          const scores = ratingsSnapshot.docs.map((doc) => doc.data().score)
+
           return {
             ...docData,
             id: doc.id,
+            ratings: ratingsSnapshot.docs.length,
+            score: scores.reduce((sum, curr) => sum + curr, 0),
           }
         })
+      )
 
-        setData(results)
-      })
+      setData(results)
+    }
+
+    refresh()
   }, [])
 
   return data
@@ -70,7 +82,6 @@ export const usePlaces = () => {
   return data
     .map((d) => ({
       ...d,
-      rating: 5,
       distance: coords ? distance(d.coords, coords) : null,
     }))
     .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
@@ -97,6 +108,7 @@ export interface RatingForm {
 export interface RatingData {
   date: { seconds: number; nanoseconds: number }
   comments: string
+  score: number
   estacionamento: number
   banheiro: number
   refeitorio: number
@@ -107,21 +119,19 @@ export const usePlaceRatings = (placeId: string) => {
   const [ratings, setRatings] = useState<Rating[]>([])
 
   useEffect(() => {
-    db.collection(`places/${placeId}/ratings`)
-      .get()
-      .then((querySnapshot) => {
-        const results = querySnapshot.docs.map((doc) => {
-          const data = doc.data() as RatingData
-          return {
-            ...data,
-            id: doc.id,
-            score:
-              (data.banheiro + data.estacionamento + data.infraestrutura + data.refeitorio) / 4,
-          }
-        })
-
-        setRatings(results)
+    const refresh = async () => {
+      const snapshot = await db.collection(`places/${placeId}/ratings`).get()
+      const results = snapshot.docs.map((doc) => {
+        const data = doc.data() as RatingData
+        return {
+          ...data,
+          id: doc.id,
+        }
       })
+      setRatings(results)
+    }
+
+    refresh()
   }, [placeId])
 
   return ratings
@@ -131,5 +141,12 @@ export const sendRating = (placeId: string, rating: RatingForm) => {
   return db.collection(`places/${placeId}/ratings`).add({
     ...rating,
     date: new Date(),
+    score:
+      [
+        rating.banheiro || 0,
+        rating.estacionamento || 0,
+        rating.infraestrutura || 0,
+        rating.refeitorio || 0,
+      ].reduce((sum, curr) => sum + curr, 0) / 4,
   })
 }

@@ -55,6 +55,7 @@ export function RatingPage() {
                   <Box component="fieldset" mb={0.5} borderColor="transparent">
                     <Typography component="legend">{label}</Typography>
                     <Rating
+                      size="large"
                       name={crit}
                       value={parseInt((formik.values as any)[crit])}
                       onChange={(event, newValue) => {
@@ -72,7 +73,6 @@ export function RatingPage() {
                   fullWidth
                   multiline
                   variant="outlined"
-                  placeholder="lalal"
                   {...formik.getFieldProps('comments')}
                 />
               </Grid>
@@ -82,7 +82,7 @@ export function RatingPage() {
                   <Button onClick={handleCancel}>Cancelar</Button>
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" color="primary" type="submit">
+                  <Button variant="contained" color="secondary" type="submit">
                     Enviar avaliação
                   </Button>
                 </Grid>

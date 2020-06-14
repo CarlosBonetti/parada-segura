@@ -12,15 +12,16 @@ import { yellow } from '@material-ui/core/colors'
 import StarIcon from '@material-ui/icons/Star'
 import React from 'react'
 import { Rating } from '../../api'
+import { formatDate } from '../../util/i18n'
 
 export interface PlaceRatingsListProps {
   ratings: Rating[]
 }
 
-const formatDate = ({ seconds }: any) => {
+const formatRatingDate = ({ seconds }: any) => {
   const date = new Date(1970, 0, 1)
   date.setSeconds(seconds)
-  return date.toISOString()
+  return formatDate(date)
 }
 
 export function PlaceRatingsList({ ratings }: PlaceRatingsListProps) {
@@ -37,7 +38,7 @@ export function PlaceRatingsList({ ratings }: PlaceRatingsListProps) {
               secondaryTypographyProps={{ component: 'div' }}
               secondary={
                 <>
-                  <Typography variant="body2">{formatDate(rating.date)}</Typography>
+                  <Typography variant="body2">{formatRatingDate(rating.date)}</Typography>
                   <Typography variant="body2">{rating.comments}</Typography>
                 </>
               }

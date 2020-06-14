@@ -17,7 +17,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { usePlaces } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
-import { humanizeDistance } from '../../position'
+import { formatDecimal } from '../../util/i18n'
 
 export function NearbyListingPage() {
   const places = usePlaces()
@@ -49,19 +49,22 @@ export function NearbyListingPage() {
                       <Box display="inline-flex" alignItems="center" mt={0.5}>
                         <LocalShippingIcon color="primary" fontSize="small" />
                         <Typography variant="subtitle2" style={{ marginLeft: '0.25rem' }}>
-                          {humanizeDistance(result.distance)} de distância
+                          {formatDecimal(result.distance)}km de distância
                         </Typography>
                       </Box>
                     )}
                   </>
                 }
               />
-              {result.rating && (
-                <Box display="flex" alignItems="center" mt={1} ml={1}>
-                  <StarIcon fontSize="small" style={{ color: yellow[700] }} />
-                  <Typography variant="caption">{result.rating}</Typography>
-                </Box>
-              )}
+              <Box display="flex" alignItems="center" mt={1} ml={1}>
+                {result.ratings > 0 && (
+                  <>
+                    <StarIcon fontSize="small" style={{ color: yellow[700] }} />
+                    <Typography variant="caption">{formatDecimal(result.score)}</Typography>
+                  </>
+                )}
+                {result.ratings === 0 && <Typography variant="caption">Não avaliado</Typography>}
+              </Box>
             </ListItem>
             <Divider variant="inset" component="li" />
           </React.Fragment>

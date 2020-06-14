@@ -8,6 +8,7 @@ import { Link, useParams } from 'react-router-dom'
 import { API_KEY, usePlace, usePlaceRatings } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
 import { PlaceRatingsList } from './PlaceRatings'
+import { formatDecimal } from '../../util/i18n'
 
 export interface PlaceDetailPageParams {
   placeId: string
@@ -77,7 +78,7 @@ export function PlaceDetailPage() {
                     </Grid>
                     <Grid item>
                       <Typography variant="h6" component="span">
-                        {score}
+                        {formatDecimal(score)}
                       </Typography>
                     </Grid>
                     <Grid item>
