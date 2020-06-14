@@ -1,17 +1,36 @@
-import { Container, Box, Typography } from '@material-ui/core'
+import {
+  Container,
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+} from '@material-ui/core'
 import React from 'react'
 
 export function PlaceInfo() {
   return (
     <Container>
-      <Box my={2}>
-        <Typography variant="subtitle2">Sobre o PPD</Typography>
-        <Typography variant="body2">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore necessitatibus ipsam
-          itaque consequatur blanditiis nesciunt expedita voluptatem aperiam. Alias, quas rem! Optio
-          dolorum sit nihil earum excepturi quam similique mollitia?
-        </Typography>
-      </Box>
+      <List>
+        <ListItem>
+          <ListItemText primary="Horário de funcionamento" secondary="Atendimento 24h" />
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText
+            primary="Serviço e estrutura"
+            secondaryTypographyProps={{ component: 'div' }}
+            secondary={
+              <>
+                <Typography variant="body2">Serviço completo de abastecimento</Typography>
+                <Typography variant="body2">Troca de óleo</Typography>
+                <Typography variant="body2">Restaurante buffet</Typography>
+              </>
+            }
+          />
+        </ListItem>
+      </List>
     </Container>
   )
 }
