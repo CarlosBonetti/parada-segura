@@ -14,7 +14,7 @@ import React from 'react'
 import { Rating } from '../../api'
 import { formatDate } from '../../util/i18n'
 
-export interface PlaceRatingsListProps {
+export interface PlaceRatingListProps {
   ratings: Rating[]
 }
 
@@ -24,7 +24,7 @@ const formatRatingDate = ({ seconds }: any) => {
   return formatDate(date)
 }
 
-export function PlaceRatingsList({ ratings }: PlaceRatingsListProps) {
+export function PlaceRatingList({ ratings }: PlaceRatingListProps) {
   return (
     <List>
       {ratings.map((rating) => (

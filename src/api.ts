@@ -27,7 +27,7 @@ export const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 // }
 
 export interface Place extends FirebasePlace {
-  distance: number
+  distance: number | null
 }
 
 export interface FirebasePlace {
@@ -42,7 +42,7 @@ export interface FirebasePlace {
   address: string
 }
 
-export const useFirePlaces = () => {
+export const useFirePlaces = (): FirebasePlace[] => {
   const [data, setData] = useState<FirebasePlace[]>([])
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export const useFirePlaces = () => {
   return data
 }
 
-export const usePlaces = () => {
+export const usePlaces = (): Place[] => {
   const position = usePosition()
   const { coords } = position || {}
 
@@ -87,9 +87,9 @@ export const usePlaces = () => {
     .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
 }
 
-export const usePlace = (placeId: string) => {
+export const usePlace = (placeId: string): Place | null => {
   const places = usePlaces()
-  return places.find((place) => place.id === placeId)
+  return places.find((place) => place.id === placeId) ?? null
 }
 
 export interface Rating extends RatingData {
