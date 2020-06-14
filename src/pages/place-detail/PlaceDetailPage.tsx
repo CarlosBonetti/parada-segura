@@ -2,21 +2,24 @@ import { Box, Button, Container, Grid, makeStyles, Tab, Tabs, Typography } from 
 import DirectionsIcon from '@material-ui/icons/Directions'
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { API_KEY, usePlace, usePlaceRatings } from '../../api'
+import { API_KEY, Place } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
+import { usePosition } from '../../position'
 import { PlaceInfo } from './PlaceInfo'
 import { PlaceRating } from './PlaceRating'
-import { usePosition } from '../../position'
 
 export interface PlaceDetailPageParams {
   placeId: string
 }
 
-export function PlaceDetailPage() {
+export interface PlaceDetailPageProps {
+  places: Place[]
+}
+
+export function PlaceDetailPage({ places }: PlaceDetailPageProps) {
   const position = usePosition()
   const { placeId } = useParams()
-  const place = usePlace(placeId)
-  const ratings = usePlaceRatings(placeId)
+  const place = places.find((p) => p.id === placeId)
 
   const [tab, setTab] = useState<string>('avaliacoes')
   const classes = useStyles()
@@ -72,7 +75,7 @@ export function PlaceDetailPage() {
             <Tab value="avaliacoes" label="Avaliações" />
           </Tabs>
 
-          {tab === 'avaliacoes' && <PlaceRating place={place} ratings={ratings} />}
+          {tab === 'avaliacoes' && <PlaceRating place={place} />}
           {tab === 'info' && <PlaceInfo />}
         </>
       )}

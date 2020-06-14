@@ -15,19 +15,22 @@ import LocalShippingIcon from '@material-ui/icons/LocalShipping'
 import StarIcon from '@material-ui/icons/Star'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { usePlaces } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
 import { formatDecimal } from '../../util/i18n'
+import { Place } from '../../api'
 
-export function NearbyListingPage() {
-  const places = usePlaces()
+export interface NearbyListingPageProps {
+  places: Place[]
+}
+
+export function NearbyListingPage({ places }: NearbyListingPageProps) {
   const classes = useStyles()
 
   return (
     <PageLayout>
       <List>
         {places.map((result) => (
-          <React.Fragment key={result.id}>
+          <React.Fragment key={`item-${result.id}`}>
             <ListItem alignItems="flex-start" button component={Link} to={`/place/${result.id}`}>
               <ListItemAvatar>
                 <Avatar className={classes.avatar}>
@@ -58,13 +61,15 @@ export function NearbyListingPage() {
                 }
               />
               <Box display="flex" alignItems="center" mt={1} ml={1}>
-                {result.ratings > 0 && (
+                {result.ratings.length > 0 && (
                   <>
                     <StarIcon fontSize="small" style={{ color: yellow[700] }} />
-                    <Typography variant="caption">{formatDecimal(result.score)}</Typography>
+                    <Typography variant="caption">{formatDecimal(result?.score || 0)}</Typography>
                   </>
                 )}
-                {result.ratings === 0 && <Typography variant="caption">Não avaliado</Typography>}
+                {result.ratings.length === 0 && (
+                  <Typography variant="caption">Não avaliado</Typography>
+                )}
               </Box>
             </ListItem>
             <Divider variant="inset" component="li" />

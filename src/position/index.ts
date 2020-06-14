@@ -1,4 +1,9 @@
-export function distance(coords1: Coordinates, coords2: Coordinates) {
+export interface Coords {
+  latitude: number
+  longitude: number
+}
+
+export function distance(coords1: Coords, coords2: Coords) {
   const { latitude: lat1, longitude: lng1 } = coords1
   const { latitude: lat2, longitude: lng2 } = coords2
   const p = 0.017453292519943295 // Math.PI / 180

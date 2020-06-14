@@ -11,11 +11,11 @@ import {
 import { yellow } from '@material-ui/core/colors'
 import StarIcon from '@material-ui/icons/Star'
 import React from 'react'
-import { Rating } from '../../api'
+import { RatingDocument } from '../../api'
 import { formatDate } from '../../util/i18n'
 
 export interface PlaceRatingListProps {
-  ratings: Rating[]
+  ratings: RatingDocument[]
 }
 
 const formatRatingDate = ({ seconds }: any) => {

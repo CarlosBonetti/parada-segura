@@ -3,11 +3,15 @@ import { Rating } from '@material-ui/lab'
 import { useFormik } from 'formik'
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { RatingForm, sendRating, usePlace } from '../../api'
+import { Place, RatingForm, sendRating } from '../../api'
 import { PageLayout } from '../../components/PageLayout'
 
 export interface RatingPageParams {
   placeId: string
+}
+
+export interface RatingPageProps {
+  places: Place[]
 }
 
 const crits = {
@@ -17,9 +21,9 @@ const crits = {
   infraestrutura: 'Infraestrutura',
 }
 
-export function RatingPage() {
+export function RatingPage({ places }: RatingPageProps) {
   const { placeId } = useParams()
-  const place = usePlace(placeId)
+  const place = places.find((p) => p.id === placeId)
   const history = useHistory()
 
   const formik = useFormik<RatingForm>({

@@ -4,17 +4,16 @@ import StarIcon from '@material-ui/icons/Star'
 import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Place, Rating } from '../../api'
+import { Place } from '../../api'
 import { formatDecimal } from '../../util/i18n'
 import { PlaceRatingList } from './PlaceRatingList'
 
 export interface PlaceRating {
   place: Place
-  ratings: Rating[]
 }
 
-export function PlaceRating({ place, ratings }: PlaceRating) {
-  const score = ratings.reduce((curr, s) => curr + s.score, 0) / (ratings.length || 1)
+export function PlaceRating({ place }: PlaceRating) {
+  const { ratings, score } = place
 
   return (
     <Container>
@@ -27,7 +26,7 @@ export function PlaceRating({ place, ratings }: PlaceRating) {
             </Grid>
             <Grid item>
               <Typography variant="h6" component="span">
-                {formatDecimal(score)}
+                {formatDecimal(score || 0)}
               </Typography>
             </Grid>
             <Grid item>

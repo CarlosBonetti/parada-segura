@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { db } from './firebase'
 import { distance, usePosition } from './position'
 import initialPdps from './pdps.json'
@@ -26,14 +26,14 @@ export const API_KEY = 'AIzaSyAH5v9tlsdmyWngvCTegauuGin1C-C62AA'
 //   return useSWR(`${proxy}/https://maps.googleapis.com/maps/api/place/details/json?${str}`, fetcher)
 // }
 
-export interface Place extends FirebasePlace {
+export interface Place extends PlaceDocument {
   distance: number | null
+  score: number | null
+  ratings: RatingDocument[]
 }
 
-export interface FirebasePlace {
+export interface PlaceDocument {
   id: string
-  score: number
-  ratings: number
   name: string
   coords: Coordinates
   city: string
@@ -42,59 +42,16 @@ export interface FirebasePlace {
   address: string
 }
 
-export const useFirePlaces = (): FirebasePlace[] => {
-  const [data, setData] = useState<FirebasePlace[]>([])
-
-  useEffect(() => {
-    const refresh = async () => {
-      const snapshot = await db.collection('places').get()
-      const results = await Promise.all(
-        snapshot.docs.map(async (doc) => {
-          const docData = doc.data() as FirebasePlace
-
-          const ratingsSnapshot = await doc.ref.collection('ratings').get()
-          const scores = ratingsSnapshot.docs.map((doc) => doc.data().score)
-
-          return {
-            ...docData,
-            id: doc.id,
-            ratings: ratingsSnapshot.docs.length,
-            score: scores.reduce((sum, curr) => sum + curr, 0) / scores.length,
-          }
-        })
-      )
-
-      setData(results)
-    }
-
-    refresh()
-  }, [])
-
-  return data
-}
-
-export const usePlaces = (): Place[] => {
-  const position = usePosition()
-  const { coords } = position || {}
-
-  const data = useFirePlaces()
-
-  return data
-    .map((d) => ({
-      ...d,
-      distance: coords ? distance(d.coords, coords) : null,
-    }))
-    .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
-}
-
-export const usePlace = (placeId: string): Place | null => {
-  const places = usePlaces()
-  return places.find((place) => place.id === placeId) ?? null
-}
-
-export interface Rating extends RatingData {
+export interface RatingDocument {
   id: string
+  place: any
+  date: { seconds: number; nanoseconds: number }
+  comments: string
   score: number
+  estacionamento: number
+  banheiro: number
+  refeitorio: number
+  infraestrutura: number
 }
 
 export interface RatingForm {
@@ -105,42 +62,50 @@ export interface RatingForm {
   infraestrutura: number | null
 }
 
-export interface RatingData {
-  date: { seconds: number; nanoseconds: number }
-  comments: string
-  score: number
-  estacionamento: number
-  banheiro: number
-  refeitorio: number
-  infraestrutura: number
-}
+export const usePlaces = () => {
+  const position = usePosition()
+  const coords = position?.coords || null
+  const places = useFirebaseCollection<PlaceDocument>('places')
+  const ratings = useFirebaseCollection<RatingDocument>('ratings')
 
-export const usePlaceRatings = (placeId: string) => {
-  const [ratings, setRatings] = useState<Rating[]>([])
-
-  useEffect(() => {
-    const refresh = async () => {
-      const snapshot = await db.collection(`places/${placeId}/ratings`).get()
-      const results = snapshot.docs.map((doc) => {
-        const data = doc.data() as RatingData
+  const result = useMemo(() => {
+    return places
+      .map((place) => {
+        const placeRatings = ratings.filter((rating) => rating.place.id === place.id)
         return {
-          ...data,
-          id: doc.id,
+          ...place,
+          distance: coords ? distance(place.coords, coords) : null,
+          ratings: placeRatings,
+          score: placeRatings.reduce((sum, rating) => sum + rating.score, 0) / placeRatings.length,
         }
       })
-      setRatings(results)
-    }
+      .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
+  }, [coords, places, ratings])
 
-    refresh()
-  }, [placeId])
+  return result
+}
 
-  return ratings
+export const useFirebaseCollection = <T extends { id: string }>(path: string): T[] => {
+  const [results, setResults] = useState<T[]>([])
+
+  useEffect(() => {
+    return db.collection(path).onSnapshot((snapshot) => {
+      const results = snapshot.docs.map((doc) => {
+        const data = doc.data() as T
+        return { ...data, id: doc.id }
+      })
+      setResults(results)
+    })
+  }, [path])
+
+  return results
 }
 
 export const sendRating = (placeId: string, rating: RatingForm) => {
-  return db.collection(`places/${placeId}/ratings`).add({
+  return db.collection(`ratings`).add({
     ...rating,
     date: new Date(),
+    place: db.doc(`places/${placeId}`),
     score:
       [
         rating.banheiro || 0,
