@@ -13,4 +13,5 @@ export const app = firebase.initializeApp({
   measurementId: 'G-6JS5GHTS8C',
 })
 
+export const analytics = app.analytics()
 export const db = app.firestore()
